@@ -2,15 +2,21 @@ let session;
 
 async function loadModel() {
     try {
-        // Update the path to the ONNX model file
+        // Ensure the path is correct
         session = await ort.InferenceSession.create('/lung_cancer_detection_model.onnx');
-        console.log('Model loaded successfully');
+        console.log('Model loaded successfully:', session);
     } catch (error) {
         console.error('Failed to load the model:', error);
     }
 }
 
 async function predict() {
+    if (!session) {
+        console.error('Model session is not initialized');
+        alert('Model not loaded yet. Please wait.');
+        return;
+    }
+
     const fileInput = document.getElementById('file-input');
     if (fileInput.files.length === 0) {
         alert('Please select an image.');
@@ -23,6 +29,7 @@ async function predict() {
     const inputTensor = new ort.Tensor('float32', imageData, [1, 3, 250, 250]);
     try {
         const results = await session.run({ input: inputTensor });
+        console.log('Model run results:', results);
         const outputTensor = results.output;
         const probabilities = softmax(outputTensor.data);
         const predictedClass = argMax(probabilities);
