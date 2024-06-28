@@ -2,12 +2,20 @@ let session;
 
 async function loadModel() {
     try {
-        session = await ort.InferenceSession.create('./lung_cancer_detection_model.onnx');
+        const session = await ort.InferenceSession.create('/lung_cancer_detection_model.onnx'); // use the correct path
         console.log('Model loaded successfully');
-    } catch (error) {
-        console.error('Failed to load the model:', error);
+        return session;
+    } catch (err) {
+        console.error('Failed to load the model:', err);
     }
 }
+
+loadModel().then(session => {
+    // use the session to run inference here
+    console.log('Session ready for inference');
+});
+
+
 
 async function predict() {
     const fileInput = document.getElementById('file-input');
