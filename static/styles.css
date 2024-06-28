@@ -1,0 +1,22 @@
+
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+}
+h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+#file-input {
+    margin-bottom: 20px;
+}
+#prediction-result {
+    margin-top: 20px;
+    font-size: 1.2em;
+}
+#uploaded-image {
+    margin-top: 20px;
+    max-width: 100%;
+    height: auto;
+}

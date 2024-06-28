@@ -1,19 +1,20 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="static/styles.css">
     <title>Lung Cancer Detection</title>
     <link rel="stylesheet" href="static/styles.css">
     <!-- Include ONNX Runtime Web from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+
 </head>
 <body>
     <h1>Lung Cancer Detection</h1>
-    <input type="file" id="file-input">
+    <input type="file" id="file-input" accept="image/*">
     <button onclick="predict()">Predict</button>
+    <div id="prediction-result"></div>
+    <img id="uploaded-image" src="">
     <script src="static/script.js"></script>
 </body>
 </html>

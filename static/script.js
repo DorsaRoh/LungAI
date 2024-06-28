@@ -17,6 +17,7 @@ async function predict() {
     }
 
     const image = fileInput.files[0];
+    displayImage(image);
     const imageData = await preprocessImage(image);
 
     const inputTensor = new ort.Tensor('float32', imageData, [1, 3, 250, 250]);
@@ -28,7 +29,8 @@ async function predict() {
 
         // Assuming the classes are 'No Cancer' and 'Cancer'
         const classes = ['No Cancer', 'Cancer'];
-        alert(`Prediction: ${classes[predictedClass]} (Confidence: ${probabilities[predictedClass].toFixed(4)})`);
+        const resultText = `Prediction: ${classes[predictedClass]} (Confidence: ${probabilities[predictedClass].toFixed(4)})`;
+        document.getElementById('prediction-result').textContent = resultText;
     } catch (error) {
         console.error('Failed to run the model:', error);
     }
@@ -60,7 +62,7 @@ async function preprocessImage(image) {
                 // Get the image data from the canvas
                 const imageData = ctx.getImageData(0, 0, 250, 250);
                 const { data } = imageData;
-                
+
                 // Preprocess the image data to match the model input
                 const floatData = new Float32Array(3 * 250 * 250);
                 for (let i = 0; i < 250 * 250; i++) {
@@ -75,6 +77,14 @@ async function preprocessImage(image) {
         reader.onerror = (error) => reject(error);
         reader.readAsDataURL(image);
     });
+}
+
+function displayImage(image) {
+    const reader = new FileReader();
+    reader.onload = () => {
+        document.getElementById('uploaded-image').src = reader.result;
+    };
+    reader.readAsDataURL(image);
 }
 
 // Load the model when the page loads
