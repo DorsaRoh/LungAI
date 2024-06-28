@@ -1,73 +1,135 @@
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
 import os
-import cv2
-import numpy as np
-import matplotlib.pyplot as plt
+import copy
 
-def preprocess_image(image, apply_full_preprocessing=True):
-    # convert image to grayscale if not already
-    if len(image.shape) == 3:
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    
-    image = enhance_contrast(image)
-    image = resize_image(image)
-    image = standardize_image(image)
-    
-    return image
+# define data transformations
+transform = transforms.Compose([
+    transforms.Resize((250, 250)),  # resize images to 250x250 pixels
+    transforms.ToTensor(),  # convert images to pytorch tensors
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # normalize images with mean and std deviation of imagenet dataset
+])
 
-# contrast enhancement
-def enhance_contrast(image):
-    clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
-    image = clahe.apply(image)
-    return image
+# specify the directory containing the dataset
+data_dir = 'Processed_Data'
 
-# resize image
-def resize_image(image, size=(250, 250)):
-    image = cv2.resize(image, size, interpolation=cv2.INTER_AREA)
-    return image
+# load the datasets with the specified transformations
+train_dataset = datasets.ImageFolder(os.path.join(data_dir, 'train'), transform=transform)  # load training dataset with transformations
+valid_dataset = datasets.ImageFolder(os.path.join(data_dir, 'valid'), transform=transform)  # load validation dataset with transformations
+test_dataset = datasets.ImageFolder(os.path.join(data_dir, 'test'), transform=transform)  # load test dataset with transformations
 
-# standardize image to mean 0 and std 1, then scale to 0-255 range
-def standardize_image(image):
-    image = (image - np.mean(image)) / np.std(image)
-    image = ((image - np.min(image)) / (np.max(image) - np.min(image))) * 255
-    return image
+# set batch size for the dataloaders
+batch_size = 32  # number of images to be processed in one iteration
 
-# process all images in a directory
-def process_directory(directory, output_directory):
-    if not os.path.exists(output_directory):
-        os.makedirs(output_directory)
-        
-    for subdir, _, files in os.walk(directory):
-        for file in files:
-            if file.endswith('.png'):
-                image_path = os.path.join(subdir, file)
-                image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-                preprocessed_image = preprocess_image(image)
-                
-                # save preprocessed image
-                relative_path = os.path.relpath(subdir, directory)
-                output_path = os.path.join(output_directory, relative_path)
-                if not os.path.exists(output_path):
-                    os.makedirs(output_path)
-                
-                output_image_path = os.path.join(output_path, file)
-                cv2.imwrite(output_image_path, preprocessed_image.astype(np.uint8))
-                
-                # display the preprocessed image
-                # plt.imshow(preprocessed_image, cmap='gray')
-                # plt.title(f'Preprocessed Image: {file}')
-                # plt.show()
+# create dataloaders for the datasets
+train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)  # create dataloader for training data with shuffling
+valid_loader = DataLoader(valid_dataset, batch_size=batch_size, shuffle=False)  # create dataloader for validation data without shuffling
+test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)  # create dataloader for test data without shuffling
 
-# paths to train, valid, and test directories
-train_dir = 'Data/train'
-valid_dir = 'Data/valid'
-test_dir = 'Data/test'
+# print dataset sizes for confirmation
+#print(f"Number of training images: {len(train_dataset)}") # 600
+#print(f"Number of validation images: {len(valid_dataset)}") # 72
+#print(f"Number of test images: {len(test_dataset)}") # 315
 
-# output directories for preprocessed images
-train_output_dir = 'Processed_Data/train'
-valid_output_dir = 'Processed_Data/valid'
-test_output_dir = 'Processed_Data/test'
+# define the CNN architecture
+class LungCancerCNN(nn.Module):
+    def __init__(self, num_classes):
+        super(LungCancerCNN, self).__init__()
+        self.conv1 = nn.Conv2d(3, 32, kernel_size=3, padding=1)
+        self.conv2 = nn.Conv2d(32, 64, kernel_size=3, padding=1)
+        self.conv3 = nn.Conv2d(64, 128, kernel_size=3, padding=1)
+        self.pool = nn.MaxPool2d(kernel_size=2, stride=2, padding=0)
+        self.fc1 = nn.Linear(128 * 31 * 31, 512)
+        self.fc2 = nn.Linear(512, num_classes)
 
-# apply preprocessing
-process_directory(train_dir, train_output_dir)
-process_directory(valid_dir, valid_output_dir)
-process_directory(test_dir, test_output_dir)
+    def forward(self, x):
+        x = self.pool(nn.functional.relu(self.conv1(x)))
+        x = self.pool(nn.functional.relu(self.conv2(x)))
+        x = self.pool(nn.functional.relu(self.conv3(x)))
+        x = x.view(-1, 128 * 31 * 31)
+        x = nn.functional.relu(self.fc1(x))
+        x = self.fc2(x)
+        return x
+
+num_classes = len(train_dataset.classes)
+model = LungCancerCNN(num_classes)
+
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+def train_model(model, train_loader, valid_loader, criterion, optimizer, num_epochs=25):
+    best_model_wts = copy.deepcopy(model.state_dict())
+    best_acc = 0.0
+
+    for epoch in range(num_epochs):
+        print(f'Epoch {epoch}/{num_epochs - 1}')
+        print('-' * 10)
+
+        for phase in ['train', 'valid']:
+            if phase == 'train':
+                model.train()
+                dataloader = train_loader
+            else:
+                model.eval()
+                dataloader = valid_loader
+
+            running_loss = 0.0
+            running_corrects = 0
+
+            for inputs, labels in dataloader:
+                inputs = inputs.to(device)
+                labels = labels.to(device)
+
+                optimizer.zero_grad()
+
+                with torch.set_grad_enabled(phase == 'train'):
+                    outputs = model(inputs)
+                    _, preds = torch.max(outputs, 1)
+                    loss = criterion(outputs, labels)
+
+                    if phase == 'train':
+                        loss.backward()
+                        optimizer.step()
+
+                running_loss += loss.item() * inputs.size(0)
+                running_corrects += torch.sum(preds == labels.data)
+
+            epoch_loss = running_loss / len(dataloader.dataset)
+            epoch_acc = running_corrects.double() / len(dataloader.dataset)
+
+            print(f'{phase} Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}')
+
+            if phase == 'valid' and epoch_acc > best_acc:
+                best_acc = epoch_acc
+                best_model_wts = copy.deepcopy(model.state_dict())
+
+        print()
+
+    print(f'Best val Acc: {best_acc:.4f}')
+    model.load_state_dict(best_model_wts)
+    return model
+
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+model = model.to(device)
+trained_model = train_model(model, train_loader, valid_loader, criterion, optimizer, num_epochs=25)
+
+def evaluate_model(model, test_loader):
+    model.eval()
+    running_corrects = 0
+
+    for inputs, labels in test_loader:
+        inputs = inputs.to(device)
+        labels = labels.to(device)
+
+        outputs = model(inputs)
+        _, preds = torch.max(outputs, 1)
+        running_corrects += torch.sum(preds == labels.data)
+
+    test_acc = running_corrects.double() / len(test_loader.dataset)
+    print(f'Test Acc: {test_acc:.4f}')
+
+evaluate_model(trained_model, test_loader)
+torch.save(trained_model.state_dict(), 'lung_cancer_detection_model.pth')
