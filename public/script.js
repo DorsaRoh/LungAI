@@ -89,15 +89,15 @@ function displayImage(image) {
     reader.readAsDataURL(image);
 }
 
-// Add event listener to display image when file is selected
-document.getElementById('file-input').addEventListener('change', function() {
-    if (this.files && this.files[0]) {
-        displayImage(this.files[0]);
-    }
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('file-input').addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            displayImage(this.files[0]);
+        }
+    });
+
+    document.getElementById('diagnoseButton').addEventListener('click', predict);
+
+    // Load the model when the DOM is fully loaded
+    loadModel();
 });
-
-// Add event listener to diagnose button
-document.getElementById('diagnoseButton').addEventListener('click', predict);
-
-// Load the model when the page loads
-window.onload = loadModel;
