@@ -2,8 +2,16 @@ let session;
 
 async function loadModel() {
     try {
-        // Ensure the path is correct
-        session = await ort.InferenceSession.create('/lung_cancer_detection_model.onnx');
+        // Fetch the model file to ensure it's accessible
+        const response = await fetch('/lung_cancer_detection_model.onnx');
+        if (!response.ok) {
+            throw new Error(`Failed to fetch model: ${response.statusText}`);
+        }
+        const arrayBuffer = await response.arrayBuffer();
+        console.log('Model file fetched successfully');
+
+        // Create the inference session
+        session = await ort.InferenceSession.create(arrayBuffer);
         console.log('Model loaded successfully:', session);
     } catch (error) {
         console.error('Failed to load the model:', error);
