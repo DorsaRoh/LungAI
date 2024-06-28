@@ -2,29 +2,14 @@ let session;
 
 async function loadModel() {
     try {
-        // Fetch the model file to ensure it's accessible
-        const response = await fetch('/lung_cancer_detection_model.onnx');
-        if (!response.ok) {
-            throw new Error(`Failed to fetch model: ${response.statusText}`);
-        }
-        const arrayBuffer = await response.arrayBuffer();
-        console.log('Model file fetched successfully');
-
-        // Create the inference session
-        session = await ort.InferenceSession.create(arrayBuffer);
-        console.log('Model loaded successfully:', session);
+        session = await ort.InferenceSession.create('./lung_cancer_detection_model.onnx');
+        console.log('Model loaded successfully');
     } catch (error) {
         console.error('Failed to load the model:', error);
     }
 }
 
 async function predict() {
-    if (!session) {
-        console.error('Model session is not initialized');
-        alert('Model not loaded yet. Please wait.');
-        return;
-    }
-
     const fileInput = document.getElementById('file-input');
     if (fileInput.files.length === 0) {
         alert('Please select an image.');
@@ -37,7 +22,6 @@ async function predict() {
     const inputTensor = new ort.Tensor('float32', imageData, [1, 3, 250, 250]);
     try {
         const results = await session.run({ input: inputTensor });
-        console.log('Model run results:', results);
         const outputTensor = results.output;
         const probabilities = softmax(outputTensor.data);
         const predictedClass = argMax(probabilities);
@@ -46,9 +30,9 @@ async function predict() {
         const classes = ['No Cancer', 'Cancer'];
         const resultText = `Prediction: ${classes[predictedClass]} (Confidence: ${probabilities[predictedClass].toFixed(4)})`;
         document.getElementById('prediction-result').textContent = resultText;
-    } catch (error) {
-        console.error('Failed to run the model:', error);
-    }
+        } catch (error) {
+            console.error('Failed to run the model:', error);
+        }
 }
 
 function softmax(arr) {
@@ -115,3 +99,5 @@ document.getElementById('file-input').addEventListener('change', function() {
 
 // Load the model when the page loads
 window.onload = loadModel;
+
+
