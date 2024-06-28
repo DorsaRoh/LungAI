@@ -2,7 +2,8 @@ let session;
 
 async function loadModel() {
     try {
-        session = await ort.InferenceSession.create('./lung_cancer_detection_model.onnx');
+        // Update the path to the ONNX model file
+        session = await ort.InferenceSession.create('/lung_cancer_detection_model.onnx');
         console.log('Model loaded successfully');
     } catch (error) {
         console.error('Failed to load the model:', error);
