@@ -7,14 +7,18 @@
     <link rel="stylesheet" href="static/styles.css">
     <!-- Include ONNX Runtime Web from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
-
 </head>
 <body>
-    <h1>Lung Cancer Detection</h1>
-    <input type="file" id="file-input" accept="image/*">
-    <button onclick="predict()">Predict</button>
-    <div id="prediction-result"></div>
-    <img id="uploaded-image" src="">
+    <div class="container">
+        <h1>Select Image</h1>
+        <label for="file-input" class="custom-button">Custom Image Upload</label>
+        <input type="file" id="file-input" accept="image/*">
+        <div class="image-preview">
+            <img id="uploaded-image" src="" alt="Uploaded Image">
+        </div>
+        <button onclick="predict()" class="custom-button">Diagnose</button>
+        <div id="prediction-result">Results / Diagnosis</div>
+    </div>
     <script src="static/script.js"></script>
 </body>
 </html>

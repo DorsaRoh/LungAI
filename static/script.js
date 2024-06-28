@@ -17,7 +17,6 @@ async function predict() {
     }
 
     const image = fileInput.files[0];
-    displayImage(image);
     const imageData = await preprocessImage(image);
 
     const inputTensor = new ort.Tensor('float32', imageData, [1, 3, 250, 250]);
@@ -82,10 +81,21 @@ async function preprocessImage(image) {
 function displayImage(image) {
     const reader = new FileReader();
     reader.onload = () => {
-        document.getElementById('uploaded-image').src = reader.result;
+        const imgElement = document.getElementById('uploaded-image');
+        imgElement.src = reader.result;
+        imgElement.style.display = 'block'; // show the image
+        console.log('Image displayed:', imgElement.src); // debug log
     };
+    reader.onerror = (error) => console.error('Error reading file:', error); // debug log
     reader.readAsDataURL(image);
 }
+
+// Add event listener to display image when file is selected
+document.getElementById('file-input').addEventListener('change', function() {
+    if (this.files && this.files[0]) {
+        displayImage(this.files[0]);
+    }
+});
 
 // Load the model when the page loads
 window.onload = loadModel;
