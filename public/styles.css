@@ -1,12 +1,13 @@
 body {
     font-family: Arial, sans-serif;
+    background: #f4f4f9;
     text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-image: url('assets\background.jpg');
+    background: linear-gradient(to right, #f4f4f9, #e0c3fc);
 }
 
 .container {
@@ -36,6 +37,7 @@ h1 {
     cursor: pointer;
     font-size: 1em;
     margin: 10px 0;
+    transition: background 0.3s ease;
 }
 
 .custom-button:hover {
@@ -75,7 +77,6 @@ label[for="file-input"] {
     cursor: pointer;
     font-size: 1em;
     margin: 10px 0;
-    transition: background 0.3s ease;
     display: inline-block;
 }
 
