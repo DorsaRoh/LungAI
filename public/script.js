@@ -2,10 +2,10 @@ let session;
 
 async function loadModel() {
     try {
-        session = await ort.InferenceSession.create('/lung_cancer_detection_model.onnx'); // use the correct path
+        session = await ort.InferenceSession.create('./lung_cancer_detection_model.onnx');
         console.log('Model loaded successfully');
-    } catch (err) {
-        console.error('Failed to load the model:', err);
+    } catch (error) {
+        console.error('Failed to load the model:', error);
     }
 }
 
@@ -84,20 +84,18 @@ function displayImage(image) {
         const imgElement = document.getElementById('uploaded-image');
         imgElement.src = reader.result;
         imgElement.style.display = 'block'; // show the image
+        console.log('Image displayed:', imgElement.src); // debug log
     };
-    reader.onerror = (error) => console.error('Error reading file:', error);
+    reader.onerror = (error) => console.error('Error reading file:', error); // debug log
     reader.readAsDataURL(image);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('file-input').addEventListener('change', function() {
-        if (this.files && this.files[0]) {
-            displayImage(this.files[0]);
-        }
-    });
-
-    document.getElementById('diagnoseButton').addEventListener('click', predict);
-
-    // Load the model when the DOM is fully loaded
-    loadModel();
+// Add event listener to display image when file is selected
+document.getElementById('file-input').addEventListener('change', function() {
+    if (this.files && this.files[0]) {
+        displayImage(this.files[0]);
+    }
 });
+
+// Load the model when the page loads
+window.onload = loadModel;
