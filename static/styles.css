@@ -36,7 +36,6 @@ h1 {
     cursor: pointer;
     font-size: 1em;
     margin: 10px 0;
-    transition: background 0.3s ease;
 }
 
 .custom-button:hover {
