@@ -2,20 +2,12 @@ let session;
 
 async function loadModel() {
     try {
-        const session = await ort.InferenceSession.create('/lung_cancer_detection_model.onnx'); // use the correct path
+        session = await ort.InferenceSession.create('/lung_cancer_detection_model.onnx'); // use the correct path
         console.log('Model loaded successfully');
-        return session;
     } catch (err) {
         console.error('Failed to load the model:', err);
     }
 }
-
-loadModel().then(session => {
-    // use the session to run inference here
-    console.log('Session ready for inference');
-});
-
-
 
 async function predict() {
     const fileInput = document.getElementById('file-input');
@@ -92,9 +84,8 @@ function displayImage(image) {
         const imgElement = document.getElementById('uploaded-image');
         imgElement.src = reader.result;
         imgElement.style.display = 'block'; // show the image
-        console.log('Image displayed:', imgElement.src); // debug log
     };
-    reader.onerror = (error) => console.error('Error reading file:', error); // debug log
+    reader.onerror = (error) => console.error('Error reading file:', error);
     reader.readAsDataURL(image);
 }
 
@@ -104,6 +95,9 @@ document.getElementById('file-input').addEventListener('change', function() {
         displayImage(this.files[0]);
     }
 });
+
+// Add event listener to diagnose button
+document.getElementById('diagnoseButton').addEventListener('click', predict);
 
 // Load the model when the page loads
 window.onload = loadModel;
