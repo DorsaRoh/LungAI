@@ -1,5 +1,5 @@
 import json
-from Model.architecture import num_classes
+from architecture import num_classes
 
 metadata = {
     "architecture": "LungCancerCNN",
