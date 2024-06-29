@@ -1,52 +1,64 @@
 body {
     font-family: Arial, sans-serif;
-    background: url("https://github.com/DorsaRoh/lungml/blob/main/backgropr.png?raw=true") no-repeat center center fixed; 
+    background-image: url("https://raw.githubusercontent.com/DorsaRoh/LungAI/main/assets/background.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
     text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
+    color: #ffffff;
 }
 
 .container {
-    background: #fff;
-    border-radius: 15px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    width: 350px;
-    margin: 0 auto;
+    background: linear-gradient(145deg, #f4f4f9, #e0c3fc);
+    border-radius: 25px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    padding: 40px;
+    width: 400px;
     text-align: center;
-    background: linear-gradient(to right, #f4f4f9, #e0c3fc);
+    backdrop-filter: blur(10px);
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 h1 {
     font-size: 2em;
     color: #333;
     margin-bottom: 20px;
+    text-transform: uppercase;
 }
 
 .custom-button {
     display: inline-block;
-    background: linear-gradient(to right, #6a11cb, #2575fc);
+    background: #6a11cb;
     color: white;
     padding: 10px 20px;
     border: none;
-    border-radius: 5px;
+    border-radius: 25px;
     cursor: pointer;
     font-size: 1em;
     margin: 10px 0;
+    transition: background 0.3s ease, transform 0.3s ease;
 }
 
 .custom-button:hover {
-    background: linear-gradient(to right, #2575fc, #6a11cb);
+    background: #2575fc;
+    transform: translateY(-2px);
 }
 
 .image-preview {
-    background: linear-gradient(to right, #e0c3fc, #8ec5fc);
-    border-radius: 10px;
+    background: linear-gradient(145deg, #e0c3fc, #8ec5fc);
+    border-radius: 25px;
     margin: 20px 0;
-    height: 200px;
+    height: 250px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -57,21 +69,20 @@ h1 {
 .image-preview img {
     max-width: 100%;
     max-height: 100%;
-    display: none; /* hide the image initially */
 }
 
 #prediction-result {
     font-size: 1.2em;
-    color: #555;
+    color: #333;
     margin-top: 20px;
 }
 
 label[for="file-input"] {
-    background: linear-gradient(to right, #6a11cb, #2575fc);
+    background: #6a11cb;
     color: white;
     padding: 10px 20px;
     border: none;
-    border-radius: 5px;
+    border-radius: 25px;
     cursor: pointer;
     font-size: 1em;
     margin: 10px 0;
@@ -79,7 +90,8 @@ label[for="file-input"] {
 }
 
 label[for="file-input"]:hover {
-    background: linear-gradient(to right, #2575fc, #6a11cb);
+    background: #2575fc;
+    transform: translateY(-2px);
 }
 
 input[type="file"] {

@@ -30,7 +30,7 @@ async function predict() {
 
         // Assuming the classes are 'No Cancer' and 'Cancer'
         const classes = ['No Cancer', 'Cancer'];
-        const resultText = `Prediction: ${classes[predictedClass]} (Confidence: ${probabilities[predictedClass].toFixed(4)})`;
+        const resultText = `Prediction: ${classes[predictedClass]} (Accuracy: ${(probabilities[predictedClass] * 100).toFixed(2)}%)`;
         document.getElementById('prediction-result').textContent = resultText;
         } catch (error) {
             console.error('Failed to run the model:', error);
