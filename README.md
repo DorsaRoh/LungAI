@@ -1,6 +1,14 @@
 # LungAI
 
-LungAI is a deep learning-based lung cancer detection application that runs in the browser. This project uses a custom Convolutional Neural Network (CNN) model built with PyTorch to classify lung cancer images.
+LungAI is a deep learning-based lung cancer detection application that runs in the browser. This project uses a custom Convolutional Neural Network model built with PyTorch to classify lung cancer images.
+
+4x hackathon award winner - out of 1,500 total competitors.
+
+<i> This project represents the newest version, now using PyTorch.</i>
+
+
+[![GitHub](https://img.shields.io/badge/-GitHub-181717?style=for-the-badge&logo=github)](https://github.com/DorsaRoh/LungAI)
+[![HuggingFace](https://img.shields.io/badge/-HuggingFace-FFFF00?style=for-the-badge&logo=huggingface)](https://huggingface.co/dorsar/LungAI)
 
 ## Project Structure
 

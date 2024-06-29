@@ -1,13 +1,12 @@
 body {
     font-family: Arial, sans-serif;
-    background: #f4f4f9;
+    background: url("https://github.com/DorsaRoh/lungml/blob/main/backgropr.png?raw=true") no-repeat center center fixed; 
     text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
-    background: linear-gradient(to right, #f4f4f9, #e0c3fc);
 }
 
 .container {

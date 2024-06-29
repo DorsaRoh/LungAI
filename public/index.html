@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lung Cancer Detection</title>
+    <title>LungDL</title>
     <link rel="stylesheet" href="styles.css">
     <!-- Include ONNX Runtime Web from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
@@ -12,12 +12,12 @@
     <div class="container">
         <h1>Select Image</h1>
         <label for="file-input" class="custom-button">Custom Image Upload</label>
-        <input type="file" id="file-input" accept="image/*">
+        <input type="file" id="file-input" accept="image/*" onchange="displayImage(this)">
         <div class="image-preview">
-            <img id="uploaded-image" src="" alt="Uploaded Image">
+            <img id="uploaded-image" src="assets/placeholder.png">
         </div>
         <button onclick="predict()" class="custom-button">Diagnose</button>
-        <div id="prediction-result">Results / Diagnosis</div>
+        <div id="prediction-result"></div>
     </div>
     <script src="script.js"></script>
 </body>
