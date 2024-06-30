@@ -6,7 +6,7 @@ LungAI is a deep learning project aimed at detecting and classifying lung cancer
 4x hackathon award winner - out of 1,500 total competitors.
 
 [![GitHub](https://img.shields.io/badge/-GitHub-181717?style=for-the-badge&logo=github)](https://github.com/DorsaRoh/LungAI)
-[![HuggingFace](https://img.shields.io/badge/-HuggingFace-FFFF00?style=for-the-badge&logo=huggingface)](https://huggingface.co/dorsar/lung-cancer-detection)
+[![HuggingFace](https://img.shields.io/badge/-HuggingFace-FFFF00?style=for-the-badge&logo=huggingface)](https://huggingface.co/spaces/dorsar/lung-cancer-detection)
 
 
 ## Model Performance
