@@ -35,9 +35,9 @@ iface = gr.Interface(
     inputs=gr.Image(),
     outputs=gr.Label(num_top_classes=1),
     examples=[
-        ["path/to/example/image1.png"],
-        ["path/to/example/image2.png"]
+        ["Data/test/large.cell.carcinoma/000108.png"],
+        ["Data/test/normal/7 - Copy (3).png"]
     ]
 )
 
-iface.launch()
+iface.launch(share=True)
