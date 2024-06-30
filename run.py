@@ -1,82 +1,35 @@
 import torch
-import torch.nn as nn
-from torchvision import transforms, datasets, models
-from torch.utils.data import DataLoader
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-import os
+from PIL import Image
+from torchvision import transforms
+from architecture import ResNetLungCancer 
 
-# define the model architecture
-class ResNetLungCancer(nn.Module):
-    def __init__(self, num_classes=4, use_pretrained=True):
-        super(ResNetLungCancer, self).__init__()
-        if use_pretrained:
-            self.resnet = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V1)
-        else:
-            self.resnet = models.resnet50(weights=None)
-        num_ftrs = self.resnet.fc.in_features
-        self.resnet.fc = nn.Identity()
-        self.fc = nn.Sequential(
-            nn.Linear(num_ftrs, 256),
-            nn.ReLU(),
-            nn.Dropout(0.5),
-            nn.Linear(256, num_classes)
-        )
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    def forward(self, x):
-        x = self.resnet(x)
-        return self.fc(x)
+model = ResNetLungCancer(num_classes=4)
+model.load_state_dict(torch.load('Model/lung_cancer_detection_model.pth', map_location=device))
+model = model.to(device)
+model.eval()
 
-# define data transformations
-test_transform = transforms.Compose([
+preprocess = transforms.Compose([
     transforms.Resize(256),
     transforms.CenterCrop(224),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 
-# test the model
-def test_model(model, test_loader, device):
-    model.eval()
-    all_preds = []
-    all_labels = []
+# image from local file
+image_path = "Data/test/large.cell.carcinoma/000108.png"
+image = Image.open(image_path).convert('RGB') 
 
-    with torch.no_grad():
-        for inputs, labels in test_loader:
-            inputs = inputs.to(device)
-            outputs = model(inputs)
-            _, preds = torch.max(outputs, 1)
-            all_preds.extend(preds.cpu().numpy())
-            all_labels.extend(labels.numpy())
+# preprocess the image
+input_tensor = preprocess(image).unsqueeze(0).to(device)  # add batch dimension and move to device
 
-    accuracy = accuracy_score(all_labels, all_preds)
-    print(f"Accuracy: {accuracy:.4f}")
-    print("\nClassification Report:")
-    print(classification_report(all_labels, all_preds))
-    print("\nConfusion Matrix:")
-    print(confusion_matrix(all_labels, all_preds))
+# get model predictions
+with torch.no_grad():
+    output = model(input_tensor)
 
-# main execution
-if __name__ == "__main__":
-    # device
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    print(f"Using device: {device}")
+predicted_class = torch.argmax(output, dim=1).item()
 
-    # load the model
-    model = ResNetLungCancer(num_classes=4)
-    model.load_state_dict(torch.load('Model/lung_cancer_detection_model.pth', map_location=device))
-    model = model.to(device)
-    model.eval()
+class_names = ['Adenocarcinoma', 'Large Cell Carcinoma', 'Normal', 'Squamous Cell Carcinoma']
 
-    # prepare the test dataset
-    test_dir = 'Data/test' 
-    test_dataset = datasets.ImageFolder(test_dir, transform=test_transform)
-    test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False, num_workers=4)
-
-    print(f"Number of test images: {len(test_dataset)}")
-    print(f"Number of classes: {len(test_dataset.classes)}")
-    print(f"Classes: {test_dataset.classes}")
-
-    # test the model
-    test_model(model, test_loader, device)
-
-    print("Testing completed.")
+print(f"Predicted class: {class_names[predicted_class]}")
