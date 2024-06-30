@@ -4,6 +4,8 @@ LungAI is a deep learning-based lung cancer detection application that runs in t
 
 4x hackathon award winner - out of 1,500 total competitors.
 
+The lung cancer detection model achieves 98% accuracy in distinguishing between cancerous and non-cancerous cases, while maintaining 85% accuracy in differentiating between four specific types of lung conditions: adenocarcinoma, large cell carcinoma, squamous cell carcinoma, and normal (non-cancerous) tissue.
+
 <i> This project represents the newest version, now using PyTorch.</i>
 
 

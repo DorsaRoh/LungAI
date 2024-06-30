@@ -63,12 +63,12 @@ if __name__ == "__main__":
 
     # load the model
     model = ResNetLungCancer(num_classes=4)
-    model.load_state_dict(torch.load('lung_cancer_detection_model.pth', map_location=device))
+    model.load_state_dict(torch.load('Model/lung_cancer_detection_model.pth', map_location=device))
     model = model.to(device)
     model.eval()
 
     # prepare the test dataset
-    test_dir = 'Processed_Data/test' 
+    test_dir = 'Data/test' 
     test_dataset = datasets.ImageFolder(test_dir, transform=test_transform)
     test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False, num_workers=4)
 
