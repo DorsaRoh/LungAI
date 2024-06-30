@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 import os
 
-# Define the model architecture
+# define the model architecture
 class ResNetLungCancer(nn.Module):
     def __init__(self, num_classes=4, use_pretrained=True):
         super(ResNetLungCancer, self).__init__()
@@ -26,7 +26,7 @@ class ResNetLungCancer(nn.Module):
         x = self.resnet(x)
         return self.fc(x)
 
-# Define data transformations
+# define data transformations
 test_transform = transforms.Compose([
     transforms.Resize(256),
     transforms.CenterCrop(224),
@@ -34,7 +34,7 @@ test_transform = transforms.Compose([
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 
-# Function to test the model
+# test the model
 def test_model(model, test_loader, device):
     model.eval()
     all_preds = []
@@ -55,20 +55,20 @@ def test_model(model, test_loader, device):
     print("\nConfusion Matrix:")
     print(confusion_matrix(all_labels, all_preds))
 
-# Main execution
+# main execution
 if __name__ == "__main__":
-    # Set device
+    # device
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
 
-    # Load the model
+    # load the model
     model = ResNetLungCancer(num_classes=4)
     model.load_state_dict(torch.load('lung_cancer_detection_model.pth', map_location=device))
     model = model.to(device)
     model.eval()
 
-    # Prepare the test dataset
-    test_dir = 'Processed_Data/test'  # Replace with your test data directory
+    # prepare the test dataset
+    test_dir = 'Processed_Data/test' 
     test_dataset = datasets.ImageFolder(test_dir, transform=test_transform)
     test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False, num_workers=4)
 
@@ -76,7 +76,7 @@ if __name__ == "__main__":
     print(f"Number of classes: {len(test_dataset.classes)}")
     print(f"Classes: {test_dataset.classes}")
 
-    # Test the model
+    # test the model
     test_model(model, test_loader, device)
 
     print("Testing completed.")
