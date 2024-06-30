@@ -1,25 +1,37 @@
-# LungAI
+# LUNGAI: Lung Cancer Detection Model
 
-LungAI is a deep learning-based lung cancer detection application that runs in the browser. This project uses a custom Convolutional Neural Network model built with PyTorch to classify lung cancer images.
+## Project Overview
+LungAI is a deep learning project aimed at detecting and classifying lung cancer from CT scan images. The model can differentiate between cancerous and non-cancerous lung tissue, as well as classify specific types of lung cancer.
 
 4x hackathon award winner - out of 1,500 total competitors.
 
-The lung cancer detection model achieves 98% accuracy in distinguishing between cancerous and non-cancerous cases, while maintaining 85% accuracy in differentiating between four specific types of lung conditions: adenocarcinoma, large cell carcinoma, squamous cell carcinoma, and normal (non-cancerous) tissue.
+## Model Performance
+- 98% accuracy in distinguishing between cancerous and non-cancerous cases
+- 83% accuracy in differentiating between four specific types of lung conditions:
+  - Adenocarcinoma: 82% F1-score
+  - Large Cell Carcinoma: 85% F1-score
+  - Normal (non-cancerous): 98% F1-score
+  - Squamous Cell Carcinoma: 76% F1-score
 
-<i> This project represents the newest version, now using PyTorch.</i>
+<i>This project represents the newest version, now using PyTorch.</i>
 
+## Repository Structure
+- `Architecture/`: Contains the core model scripts
+  - `architecture.py`: Defines the model architecture
+  - `preprocess.py`: Data preprocessing utilities
+  - `test.py`: Script for testing the model
+- `Model/`: Stores trained model files
+  - `lung_cancer_detection_model.onnx`: ONNX format of the trained model
+  - `lung_cancer_detection_model.pth`: PyTorch weights of the trained model
+- `Data/`: (Not included in repository) Directory for storing the dataset
+- `Processed_Data/`: (Not included in repository) Directory for preprocessed data
+- `assets/`: Additional project assets
+- `requirements.txt`: List of Python dependencies
 
 [![GitHub](https://img.shields.io/badge/-GitHub-181717?style=for-the-badge&logo=github)](https://github.com/DorsaRoh/LungAI)
 [![HuggingFace](https://img.shields.io/badge/-HuggingFace-FFFF00?style=for-the-badge&logo=huggingface)](https://huggingface.co/dorsar/LungAI)
 
-## Project Structure
 
-- `Model/`
-  - `architecture.py`: Contains the custom CNN model architecture and the training script.
-  - `metadata.py`: Handles dataset processing and metadata extraction.
-  - `convert_to_onnx.py`: Converts the trained PyTorch model to ONNX format for browser compatibility.
-- `index.html`: The front-end interface for running the application in the browser.
-- `requirements.txt`: Lists the Python dependencies required for this project.
 
 ## Setup and Usage
 
@@ -31,52 +43,27 @@ First, ensure you have Python installed. Then, install the required Python libra
 pip install -r requirements.txt
 ```
 
-### Step 1: Install Dependencies
+### Step 2: Train the Model (Optional)
 
-First, ensure you have Python installed. Then, install the required Python libraries using the following command:
+Run the training script to train the model. 
+**It will be saved as `.pth` and `.onnx` files**
 
 ```bash
-pip install -r requirements.txt
+python Architecture/architecture.py
 ```
 
-### Step 2: Train the Model
+### Step 3: Run the Model
 
-Run the training script to train the custom CNN model on your lung cancer dataset:
-
-```bash
-python Model/architecture.py
-```
-
-### Step 3: Process Metadata
-
-If you need to preprocess your dataset and extract metadata, run the metadata script:
+Run the model by running the following file:
 
 ```bash
-python Model/metadata.py
-```
-
-### Step 4: Convert the Model to ONNX
-
-Convert the trained PyTorch model to ONNX format for compatibility with web applications:
-
-```bash
-python Model/convert_to_onnx.py
-```
-
-### Step 5: Run the Application in the Browser
-
-Open `index.html` in your preferred web browser to start using the LungAI application.
-
-```bash
-<!-- Open this file in your browser -->
-index.html
+python Architecture/run.py
 ```
 
 ### Notes
 
 - Make sure your dataset is structured correctly under the Processed_Data directory with subdirectories for training, validation, and testing sets.
 - The model training script expects the dataset to be in the Processed_Data directory. Ensure that the data transformations and directory paths are correctly set up in architecture.py.
-- The ONNX model conversion script (convert_to_onnx.py) requires the trained model file. Ensure you have successfully trained the model before running this script.
 
 ### Contributing
 
