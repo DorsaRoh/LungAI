@@ -32,6 +32,10 @@ LungAI is a deep learning project aimed at detecting and classifying lung cancer
 - `assets/`: Additional project assets
 - `requirements.txt`: List of Python dependencies
 
+## Data
+
+https://huggingface.co/datasets/dorsar/lung-cancer
+
 
 ## Setup and Usage
 
